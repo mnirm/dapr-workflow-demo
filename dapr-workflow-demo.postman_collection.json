@@ -1,0 +1,91 @@
+{
+	"info": {
+		"_postman_id": "a9fff2a2-d003-4458-b011-4f78af2e061c",
+		"name": "Dapr Workflow demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Start workflow",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"input\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3500/v1.0-alpha1/workflows/dapr/TestWorkflow/{{instance-id}}/start",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"v1.0-alpha1",
+						"workflows",
+						"dapr",
+						"TestWorkflow",
+						"{{instance-id}}",
+						"start"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get workflow status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3500/v1.0-alpha1/workflows/dapr/TestWorkflow/{{instance-id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"v1.0-alpha1",
+						"workflows",
+						"dapr",
+						"TestWorkflow",
+						"{{instance-id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "instance-id",
+			"value": "2"
+		}
+	]
+}
