@@ -51,6 +51,13 @@ app.MapGet("/approve/{instanceId}", async (string instanceId, [FromQuery] Approv
         Thread.Sleep(TimeSpan.FromSeconds(5));
     }
     
+    /* Line 61 throws an exception
+    Dapr.DaprException: Start Workflow operation failed: the Dapr endpoint indicated a failure. See InnerException for details.
+    ---> Grpc.Core.RpcException: Status(StatusCode="Unknown", Detail="failed to proxy request: required metadata dapr-app-id not found")
+    at Dapr.Client.DaprClientGrpc.RaiseWorkflowEventAsync(String instanceId, String workflowComponent, String eventName, Object eventData, CancellationToken cancellationToken)
+    --- End of inner exception stack trace ---
+    at Dapr.Client.DaprClientGrpc.RaiseWorkflowEventAsync(String instanceId, String workflowComponent, String eventName, Object eventData, CancellationToken cancellationToken)
+     */
     await daprClient.RaiseWorkflowEventAsync(
         instanceId: instanceId,
         workflowComponent: "dapr",
