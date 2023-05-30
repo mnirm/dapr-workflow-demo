@@ -1,26 +1,30 @@
 ﻿using Dapr.Workflow;
 using WebApp.Activities;
+using WebApp.Models;
 
 namespace WebApp.Workflows.TestWorkflow;
 
-public class TestWorkflow : Workflow<string, string>
+public class TestWorkflow : Workflow<string, DocumentProcessedResult>
 {
-    
-    private readonly WorkflowTaskOptions _defaultActivityRetryOptions = new WorkflowTaskOptions
+    public override async Task<DocumentProcessedResult> RunAsync(WorkflowContext context, string input)
     {
-        // NOTE: Beware that changing the number of retries is a breaking change for existing workflows.
-        RetryPolicy = new WorkflowRetryPolicy(
-            maxNumberOfAttempts: 3,
-            firstRetryInterval: TimeSpan.FromSeconds(5)),
-    };
-    
-    public override async Task<string> RunAsync(WorkflowContext context, string input)
-    {
-        await context.CallActivityAsync<TransformStringActivity>(
-            nameof(TransformStringActivity),
-            input,
-            _defaultActivityRetryOptions);
+        await context.CallActivityAsync(
+            nameof(NotifyActivity),
+            new Notification($"Started workflow with instance ID: {context.InstanceId}"));
 
-        return "Done";
+        var validatedDocument = await context.CallActivityAsync<ValidatedDocumentResult>(
+            nameof(DocumentValidationActivity),
+            new DocumentToValidate("Test String", 2));
+
+        await context.CallActivityAsync(
+            nameof(NotifyActivity),
+            new Notification($"Processed Document with name {validatedDocument.DocumentName}"));
+
+        ApprovalResult approvalResult = await context.WaitForExternalEventAsync<ApprovalResult>(
+            eventName: Events.ApprovalEvent);
+        
+        context.SetCustomStatus($"Approval result: {approvalResult}");
+
+        return approvalResult == ApprovalResult.Rejected ? new DocumentProcessedResult(false) : new DocumentProcessedResult(true);
     }
 }
