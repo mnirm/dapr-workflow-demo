@@ -2,6 +2,8 @@
 ## Run dapr
 ```dapr run --app-id wfapp --dapr-grpc-port 4001 --dapr-http-port 3500```
 
+> Make sure your dapr cli version and NugetPackage version match.
+
 ## Start new instance on workflow
 
 - `curl -i -X POST http://localhost:3500/v1.0-alpha1/workflows/dapr/TestWorkflow/start?instanceID=12345678 \
